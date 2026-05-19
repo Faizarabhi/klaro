@@ -12,7 +12,6 @@ async function bootstrap(): Promise<void> {
     .setTitle('Klaro API')
     .setDescription("API documentation pour le module Demandes d'aide")
     .setVersion('1.0')
-    .addServer('/api')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

@@ -11,7 +11,7 @@ import {
 import { AidRequestService } from './aid-request.service';
 import { CreateAidRequestDto } from './dto/create-aid-request.dto';
 import { UpdateAidRequestStatusDto } from './dto/update-aid-request-status.dto';
-import { AidStatus } from './entities/aid-request.entity';
+import { ListAidRequestsQueryDto } from './dto/list-aid-requests-query.dto';
 
 @Controller('aid-requests')
 export class AidRequestController {
@@ -23,11 +23,8 @@ export class AidRequestController {
   }
 
   @Get()
-  findAll(
-    @Query('beneficiaryId') beneficiaryId?: string,
-    @Query('status') status?: AidStatus,
-  ) {
-    return this.aidRequestService.findAll(beneficiaryId, status);
+  findAll(@Query() query: ListAidRequestsQueryDto) {
+    return this.aidRequestService.findAll(query);
   }
 
   @Patch(':id/status')

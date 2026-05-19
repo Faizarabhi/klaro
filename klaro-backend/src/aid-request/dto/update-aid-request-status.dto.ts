@@ -3,5 +3,5 @@ import { AidStatus } from '../entities/aid-request.entity';
 
 export class UpdateAidRequestStatusDto {
   @IsEnum(AidStatus, { message: 'Statut invalide.' })
-  status: AidStatus;
+  status!: AidStatus;
 }

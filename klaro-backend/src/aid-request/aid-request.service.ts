@@ -7,6 +7,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AidRequest, AidStatus } from './entities/aid-request.entity';
 import { CreateAidRequestDto } from './dto/create-aid-request.dto';
+import { ListAidRequestsQueryDto } from './dto/list-aid-requests-query.dto';
+
+export interface PaginatedAidRequests {
+  data: AidRequest[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
 
 @Injectable()
 export class AidRequestService {
@@ -49,8 +58,7 @@ export class AidRequestService {
     const isValidTransition =
       (current === AidStatus.PENDING &&
         (newStatus === AidStatus.UNDER_REVIEW ||
-          newStatus === AidStatus.REJECTED ||
-          newStatus === AidStatus.APPROVED)) ||
+          newStatus === AidStatus.REJECTED)) ||
       (current === AidStatus.UNDER_REVIEW &&
         (newStatus === AidStatus.APPROVED || newStatus === AidStatus.REJECTED));
 
@@ -64,10 +72,8 @@ export class AidRequestService {
     return this.aidRequestRepository.save(request);
   }
 
-  async findAll(
-    beneficiaryId?: string,
-    status?: AidStatus,
-  ): Promise<AidRequest[]> {
+  async findAll(queryDto: ListAidRequestsQueryDto): Promise<PaginatedAidRequests> {
+    const { beneficiaryId, status, page = 1, limit = 10 } = queryDto;
     const query: {
       beneficiaryId?: string;
       status?: AidStatus;
@@ -76,9 +82,19 @@ export class AidRequestService {
     if (beneficiaryId) query.beneficiaryId = beneficiaryId;
     if (status) query.status = status;
 
-    return this.aidRequestRepository.find({
+    const [data, total] = await this.aidRequestRepository.findAndCount({
       where: query,
       order: { createdAt: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
     });
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
   }
 }

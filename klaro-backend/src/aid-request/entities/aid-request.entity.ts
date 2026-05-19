@@ -24,26 +24,26 @@ export enum AidStatus {
 @Entity('aid_requests')
 export class AidRequest {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column('uuid')
-  beneficiaryId: string;
+  beneficiaryId!: string;
 
   @Column({ type: 'enum', enum: AidCategory })
-  category: AidCategory;
+  category!: AidCategory;
 
   @Column('decimal', { precision: 10, scale: 2 })
-  amount: number;
+  amount!: number;
 
   @Column('text')
-  description: string;
+  description!: string;
 
   @Column({ type: 'enum', enum: AidStatus, default: AidStatus.PENDING })
-  status: AidStatus;
+  status!: AidStatus;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

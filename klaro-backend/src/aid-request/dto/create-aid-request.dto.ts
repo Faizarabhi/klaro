@@ -17,20 +17,20 @@ export class CreateAidRequestDto {
   })
   @IsUUID()
   @IsNotEmpty()
-  beneficiaryId: string;
+  beneficiaryId!: string;
 
   @ApiProperty({ description: 'Catégorie de la demande d\'aide', enum: AidCategory })
   @IsEnum(AidCategory)
-  category: AidCategory;
+  category!: AidCategory;
 
   @ApiProperty({ description: "Montant de l'aide demandé", example: 1500, minimum: 1, maximum: 5000 })
   @IsNumber()
   @IsPositive({ message: 'Le montant doit être supérieur à 0.' })
   @Max(5000, { message: 'Le montant est plafonné à 5 000 €.' })
-  amount: number;
+  amount!: number;
 
   @ApiProperty({ description: "Description détaillée de la demande", example: "Besoin d'aide pour les frais scolaires" })
   @IsString()
   @IsNotEmpty()
-  description: string;
+  description!: string;
 }

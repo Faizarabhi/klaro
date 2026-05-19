@@ -7,7 +7,7 @@ import {
   AidCategory,
 } from './entities/aid-request.entity';
 import { Repository } from 'typeorm';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('AidRequestService', () => {
   let service: AidRequestService;
@@ -18,6 +18,7 @@ describe('AidRequestService', () => {
     create: jest.fn(),
     save: jest.fn(),
     findOne: jest.fn(),
+    findAndCount: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -41,9 +42,8 @@ describe('AidRequestService', () => {
     jest.clearAllMocks();
   });
 
-  // test de la règle des 2 demandes actives max
   it('should throw BadRequestException if beneficiary has 2 or more active requests', async () => {
-    mockRepository.count.mockResolvedValue(2); // mock: déjà 2 demandes actives
+    mockRepository.count.mockResolvedValue(2);
 
     const dto = {
       beneficiaryId: 'test-uuid',
@@ -56,17 +56,43 @@ describe('AidRequestService', () => {
     expect(jest.spyOn(repository, 'count')).toHaveBeenCalled();
   });
 
-  // test des transitions de statut invalides
-  it('should throw BadRequestException for invalid status transition', async () => {
-    const mockRequest = {
+  it('should update status from PENDING to UNDER_REVIEW', async () => {
+    const mockRequest: Partial<AidRequest> = {
       id: 'request-uuid',
       status: AidStatus.PENDING,
     };
+
+    mockRepository.findOne.mockResolvedValue(mockRequest);
+    mockRepository.save.mockImplementation(
+      (request: AidRequest): AidRequest => request,
+    );
+
+    const updated = await service.updateStatus(
+      'request-uuid',
+      AidStatus.UNDER_REVIEW,
+    );
+
+    expect(updated.status).toBe(AidStatus.UNDER_REVIEW);
+  });
+
+  it('should throw BadRequestException for invalid status transition from PENDING to APPROVED', async () => {
+    const mockRequest: Partial<AidRequest> = {
+      id: 'request-uuid',
+      status: AidStatus.PENDING,
+    };
+
     mockRepository.findOne.mockResolvedValue(mockRequest);
 
-    // essayer de passer de PENDING direct à APPROVED (invalide selon la règle)
     await expect(
       service.updateStatus('request-uuid', AidStatus.APPROVED),
     ).rejects.toThrow(BadRequestException);
+  });
+
+  it('should throw NotFoundException when request does not exist', async () => {
+    mockRepository.findOne.mockResolvedValue(null);
+
+    await expect(
+      service.updateStatus('missing-id', AidStatus.REJECTED),
+    ).rejects.toThrow(NotFoundException);
   });
 });
