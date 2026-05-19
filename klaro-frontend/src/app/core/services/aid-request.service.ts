@@ -19,8 +19,16 @@ export interface AidRequestResponse {
   createdAt: string;
 }
 
+export interface PaginatedAidRequestsResponse {
+  data: AidRequestResponse[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AidRequestService {
   private readonly apiUrl = 'http://localhost:3000/api/aid-requests';
@@ -32,13 +40,32 @@ export class AidRequestService {
     return this.http.post<AidRequestResponse>(this.apiUrl, payload);
   }
 
-  // admin récupérer la liste complète
-  getAllRequests(): Observable<AidRequestResponse[]> {
-    return this.http.get<AidRequestResponse[]>(this.apiUrl);
+  // admin récupérer la liste complète paginée
+  getAllRequests(
+    page = 1,
+    limit = 20,
+  ): Observable<PaginatedAidRequestsResponse> {
+    return this.http.get<PaginatedAidRequestsResponse>(
+      `${this.apiUrl}?page=${page}&limit=${limit}`,
+    );
+  }
+
+  // bénéficiaire récupérer ses demandes
+  getBeneficiaryRequests(
+    beneficiaryId: string,
+    page = 1,
+    limit = 20,
+  ): Observable<PaginatedAidRequestsResponse> {
+    return this.http.get<PaginatedAidRequestsResponse>(
+      `${this.apiUrl}?beneficiaryId=${beneficiaryId}&page=${page}&limit=${limit}`,
+    );
   }
 
   // admin valider ou refuser une demande
   updateStatus(id: string, status: string): Observable<AidRequestResponse> {
-    return this.http.patch<AidRequestResponse>(`${`${this.apiUrl}/${id}`}/status`, { status });
+    return this.http.patch<AidRequestResponse>(
+      `${`${this.apiUrl}/${id}`}/status`,
+      { status },
+    );
   }
 }

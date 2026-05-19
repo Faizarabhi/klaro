@@ -1,5 +1,37 @@
 <div class="admin-container p-6 bg-gray-50 min-h-screen">
-  <h2 class="text-2xl font-bold text-gray-800 mb-6">Gestion des demandes d'aide</h2>
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">
+    Gestion des demandes d'aide
+  </h2>
+
+  <div
+    *ngIf="successMessage"
+    class="mb-4 p-3 rounded border border-green-200 bg-green-50 text-green-700 text-sm"
+  >
+    {{ successMessage }}
+  </div>
+  <div
+    *ngIf="errorMessage"
+    class="mb-4 p-3 rounded border border-red-200 bg-red-50 text-red-700 text-sm"
+  >
+    {{ errorMessage }}
+  </div>
+
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+    <p class="text-sm text-gray-600">Total: {{ total }} demandes</p>
+    <div class="flex items-center gap-2">
+      <label for="admin-limit" class="text-sm text-gray-600">Par page</label>
+      <select
+        id="admin-limit"
+        [value]="limit"
+        (change)="onLimitChange($any($event.target).value)"
+        class="border border-gray-300 rounded px-2 py-1 text-sm"
+      >
+        <option [value]="5">5</option>
+        <option [value]="10">10</option>
+        <option [value]="20">20</option>
+      </select>
+    </div>
+  </div>
 
   <div class="overflow-hidden shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left text-gray-500">
@@ -13,24 +45,88 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let req of requests" class="bg-white border-b hover:bg-gray-100 transition-colors">
-          <td class="px-6 py-4 font-medium text-gray-900">{{ req.beneficiaryId }}</td>
+        <tr
+          *ngFor="let req of requests"
+          class="bg-white border-b hover:bg-gray-100 transition-colors"
+        >
+          <td class="px-6 py-4 font-medium text-gray-900">
+            {{ req.beneficiaryId }}
+          </td>
           <td class="px-6 py-4">{{ req.category }}</td>
           <td class="px-6 py-4">{{ req.amount }} €</td>
           <td class="px-6 py-4">
-            <span class="px-2 py-1 rounded-full text-xs font-semibold"
-                  [ngClass]="{'bg-green-100 text-green-800': req.status === 'APPROVED', 'bg-red-100 text-red-800': req.status === 'REJECTED', 'bg-yellow-100 text-yellow-800': req.status === 'PENDING'}">
+            <span
+              class="px-2 py-1 rounded-full text-xs font-semibold"
+              [ngClass]="{
+                'bg-green-100 text-green-800': req.status === 'APPROVED',
+                'bg-red-100 text-red-800': req.status === 'REJECTED',
+                'bg-yellow-100 text-yellow-800': req.status === 'PENDING',
+                'bg-blue-100 text-blue-800': req.status === 'UNDER_REVIEW',
+              }"
+            >
               {{ req.status }}
             </span>
           </td>
           <td class="px-6 py-4 text-center flex justify-center gap-2">
-            <button (click)="updateStatus(req.id, 'APPROVED')"
-                    class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition">Valider</button>
-            <button (click)="updateStatus(req.id, 'REJECTED')"
-                    class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition">Refuser</button>
+            <button
+              *ngIf="canMoveToUnderReview(req)"
+              (click)="updateStatus(req.id, 'UNDER_REVIEW')"
+              [disabled]="isUpdating"
+              class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition disabled:opacity-50"
+            >
+              Passer en revue
+            </button>
+            <button
+              *ngIf="canApprove(req)"
+              (click)="updateStatus(req.id, 'APPROVED')"
+              [disabled]="isUpdating"
+              class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:opacity-50"
+            >
+              Valider
+            </button>
+            <button
+              *ngIf="canReject(req)"
+              (click)="updateStatus(req.id, 'REJECTED')"
+              [disabled]="isUpdating"
+              class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition disabled:opacity-50"
+            >
+              Refuser
+            </button>
+            <span
+              *ngIf="
+                !canMoveToUnderReview(req) &&
+                !canApprove(req) &&
+                !canReject(req)
+              "
+              class="text-xs text-gray-500"
+            >
+              Aucune action
+            </span>
           </td>
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="mt-4 flex items-center justify-between">
+    <p class="text-sm text-gray-600">Page {{ page }} / {{ totalPages }}</p>
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        (click)="goToPreviousPage()"
+        [disabled]="page === 1"
+        class="px-3 py-1 rounded border border-gray-300 text-sm disabled:opacity-50"
+      >
+        Precedent
+      </button>
+      <button
+        type="button"
+        (click)="goToNextPage()"
+        [disabled]="page >= totalPages"
+        class="px-3 py-1 rounded border border-gray-300 text-sm disabled:opacity-50"
+      >
+        Suivant
+      </button>
+    </div>
   </div>
 </div>

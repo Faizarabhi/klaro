@@ -1,50 +1,193 @@
 <div class="max-w-2xl mx-auto p-8 bg-white shadow-xl rounded-2xl mt-10">
-  <h2 class="text-3xl font-bold text-gray-800 mb-2">Demande d'Aide Financière</h2>
-  <p class="text-gray-600 mb-8">Remplissez le formulaire ci-dessous pour soumettre votre dossier au gestionnaire.</p>
+  <h2 class="text-3xl font-bold text-gray-800 mb-2">
+    Demande d'Aide Financière
+  </h2>
+  <p class="text-gray-600 mb-8">
+    Remplissez le formulaire ci-dessous pour soumettre votre dossier au
+    gestionnaire.
+  </p>
 
-  <div *ngIf="successMessage" class="mb-6 p-4 bg-green-100 text-green-700 rounded-lg border border-green-200">
+  <div
+    *ngIf="successMessage"
+    class="mb-6 p-4 bg-green-100 text-green-700 rounded-lg border border-green-200"
+  >
     {{ successMessage }}
   </div>
-  <div *ngIf="errorMessage" class="mb-6 p-4 bg-red-100 text-red-700 rounded-lg border border-red-200">
+  <div
+    *ngIf="errorMessage"
+    class="mb-6 p-4 bg-red-100 text-red-700 rounded-lg border border-red-200"
+  >
     {{ errorMessage }}
   </div>
 
   <form [formGroup]="aidForm" (ngSubmit)="onSubmit()" class="space-y-6">
-
     <div>
-      <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Type d'aide demandée *</label>
-      <select id="category" formControlName="category"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+      <label for="category" class="block text-sm font-medium text-gray-700 mb-1"
+        >Type d'aide demandée *</label
+      >
+      <select
+        id="category"
+        formControlName="category"
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+      >
         <option value="" disabled selected>Choisir une catégorie...</option>
-        <option *ngFor="let cat of categories" [value]="cat.value">{{ cat.label }}</option>
+        <option *ngFor="let cat of categories" [value]="cat.value">
+          {{ cat.label }}
+        </option>
       </select>
-      <p *ngIf="aidForm.get('category')?.touched && aidForm.get('category')?.invalid" class="mt-1 text-xs text-red-500">
+      <p
+        *ngIf="
+          aidForm.get('category')?.touched && aidForm.get('category')?.invalid
+        "
+        class="mt-1 text-xs text-red-500"
+      >
         Veuillez choisir une catégorie.
       </p>
     </div>
 
     <div>
-      <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Montant demandé (€) *</label>
-      <input type="number" id="amount" formControlName="amount" placeholder="Ex: 450"
-             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" />
-      <p *ngIf="aidForm.get('amount')?.touched && aidForm.get('amount')?.invalid" class="mt-1 text-xs text-red-500">
+      <label for="amount" class="block text-sm font-medium text-gray-700 mb-1"
+        >Montant demandé (€) *</label
+      >
+      <input
+        type="number"
+        id="amount"
+        formControlName="amount"
+        placeholder="Ex: 450"
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+      />
+      <p
+        *ngIf="aidForm.get('amount')?.touched && aidForm.get('amount')?.invalid"
+        class="mt-1 text-xs text-red-500"
+      >
         Un montant valide (supérieur à 0) est obligatoire.
       </p>
     </div>
 
     <div>
-      <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description et motivation du besoin *</label>
-      <textarea id="description" formControlName="description" rows="5" placeholder="Expliquez en quelques lignes votre situation actuelle..."
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"></textarea>
-      <p *ngIf="aidForm.get('description')?.touched && aidForm.get('description')?.invalid" class="mt-1 text-xs text-red-500">
+      <label
+        for="description"
+        class="block text-sm font-medium text-gray-700 mb-1"
+        >Description et motivation du besoin *</label
+      >
+      <textarea
+        id="description"
+        formControlName="description"
+        rows="5"
+        placeholder="Expliquez en quelques lignes votre situation actuelle..."
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+      ></textarea>
+      <p
+        *ngIf="
+          aidForm.get('description')?.touched &&
+          aidForm.get('description')?.invalid
+        "
+        class="mt-1 text-xs text-red-500"
+      >
         La description doit contenir au moins 10 caractères.
       </p>
     </div>
 
-    <button type="submit" [disabled]="aidForm.invalid || isSubmitting"
-            class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed">
-      {{ isSubmitting ? 'Envoi en cours...' : 'Soumettre ma demande' }}
+    <button
+      type="submit"
+      [disabled]="aidForm.invalid || isSubmitting"
+      class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
+    >
+      {{ isSubmitting ? "Envoi en cours..." : "Soumettre ma demande" }}
     </button>
-
   </form>
+
+  <div class="mt-10">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <h3 class="text-2xl font-semibold text-gray-800">Mes demandes</h3>
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-gray-600">Total: {{ totalRequests }}</span>
+        <label for="beneficiary-limit" class="text-sm text-gray-600"
+          >Par page</label
+        >
+        <select
+          id="beneficiary-limit"
+          [value]="requestLimit"
+          (change)="onRequestLimitChange($any($event.target).value)"
+          class="border border-gray-300 rounded px-2 py-1 text-sm"
+        >
+          <option [value]="5">5</option>
+          <option [value]="10">10</option>
+          <option [value]="20">20</option>
+        </select>
+      </div>
+    </div>
+
+    <p *ngIf="isLoadingRequests" class="text-sm text-gray-500">
+      Chargement des demandes...
+    </p>
+
+    <p
+      *ngIf="!isLoadingRequests && !requests.length"
+      class="text-sm text-gray-500"
+    >
+      Aucune demande trouvée pour ce bénéficiaire.
+    </p>
+
+    <div
+      *ngIf="!isLoadingRequests && requests.length"
+      class="overflow-x-auto rounded-lg border border-gray-200"
+    >
+      <table class="min-w-full text-sm text-left">
+        <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+          <tr>
+            <th class="px-4 py-3">Date</th>
+            <th class="px-4 py-3">Catégorie</th>
+            <th class="px-4 py-3">Montant</th>
+            <th class="px-4 py-3">Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let request of requests" class="border-t border-gray-100">
+            <td class="px-4 py-3">{{ request.createdAt | date: "short" }}</td>
+            <td class="px-4 py-3">{{ request.category }}</td>
+            <td class="px-4 py-3">{{ request.amount }} €</td>
+            <td class="px-4 py-3">
+              <span
+                class="px-2 py-1 rounded-full text-xs font-semibold"
+                [ngClass]="{
+                  'bg-yellow-100 text-yellow-800': request.status === 'PENDING',
+                  'bg-blue-100 text-blue-800':
+                    request.status === 'UNDER_REVIEW',
+                  'bg-green-100 text-green-800': request.status === 'APPROVED',
+                  'bg-red-100 text-red-800': request.status === 'REJECTED',
+                }"
+              >
+                {{ request.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="mt-3 px-4 pb-4 flex items-center justify-between">
+        <p class="text-sm text-gray-600">
+          Page {{ requestPage }} / {{ totalRequestPages }}
+        </p>
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            (click)="goToPreviousRequestPage()"
+            [disabled]="requestPage === 1"
+            class="px-3 py-1 rounded border border-gray-300 text-sm disabled:opacity-50"
+          >
+            Precedent
+          </button>
+          <button
+            type="button"
+            (click)="goToNextRequestPage()"
+            [disabled]="requestPage >= totalRequestPages"
+            class="px-3 py-1 rounded border border-gray-300 text-sm disabled:opacity-50"
+          >
+            Suivant
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
