@@ -1,0 +1,42 @@
+<div class="form-container">
+  <h2>Demande d'Aide Financière</h2>
+  <p class="subtitle">Remplissez le formulaire ci-dessous pour soumettre votre dossier au gestionnaire.</p>
+
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <form [formGroup]="aidForm" (ngSubmit)="onSubmit()">
+
+    <div class="form-group">
+      <label for="category">Type d'aide demandée *</label>
+      <select id="category" formControlName="category">
+        <option value="" disabled selected>Choisir une catégorie...</option>
+        <option *ngFor="let cat of categories" [value]="cat.value">{{ cat.label }}</option>
+      </select>
+      <div *ngIf="aidForm.get('category')?.touched && aidForm.get('category')?.invalid" class="error-text">
+        Veuillez choisir une catégorie.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="amount">Montant demandé (€) *</label>
+      <input type="number" id="amount" formControlName="amount" placeholder="Ex: 450" />
+      <div *ngIf="aidForm.get('amount')?.touched && aidForm.get('amount')?.invalid" class="error-text">
+        Un montant valide (supérieur à 0) est obligatoire.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description et motivation du besoin *</label>
+      <textarea id="description" formControlName="description" rows="5" placeholder="Expliquez en quelques lignes votre situation actuelle..."></textarea>
+      <div *ngIf="aidForm.get('description')?.touched && aidForm.get('description')?.invalid" class="error-text">
+        La description doit contenir au moins 10 caractères.
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="aidForm.invalid || isSubmitting" class="btn-submit">
+      {{ isSubmitting ? 'Envoi en cours...' : 'Soumettre ma demande' }}
+    </button>
+
+  </form>
+</div>

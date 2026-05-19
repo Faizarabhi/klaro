@@ -1,0 +1,26 @@
+<div class="admin-container">
+  <h2>Gestion des demandes d'aide</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Bénéficiaire</th>
+        <th>Catégorie</th>
+        <th>Montant</th>
+        <th>Statut</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let req of requests">
+        <td>{{ req.beneficiaryId }}</td>
+        <td>{{ req.category }}</td>
+        <td>{{ req.amount }} €</td>
+        <td>{{ req.status }}</td>
+        <td>
+          <button (click)="updateStatus(req.id, 'APPROVED')">Valider</button>
+          <button (click)="updateStatus(req.id, 'REJECTED')">Refuser</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
