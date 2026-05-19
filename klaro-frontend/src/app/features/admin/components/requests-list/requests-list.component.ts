@@ -22,7 +22,7 @@ export class RequestsListComponent implements OnInit {
 
   updateStatus(id: string, status: string): void {
     this.aidService.updateStatus(id, status).subscribe(() => {
-      this.loadRequests()
+      this.loadRequests();
     });
   }
 }
