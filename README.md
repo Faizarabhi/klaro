@@ -2,6 +2,12 @@
 
 Klaro est une solution de gestion des demandes d'aides financieres. Ce backend expose une API NestJS robuste, typee et concentree sur les regles metier.
 
+## Demo Screenshots
+
+
+https://github.com/user-attachments/assets/c47b128f-686a-4b4b-bb67-08fa25461114
+
+
 ## Stack technique
 - Framework: NestJS
 - Langage: TypeScript
