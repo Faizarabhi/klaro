@@ -49,7 +49,8 @@ export class AidRequestService {
     const isValidTransition =
       (current === AidStatus.PENDING &&
         (newStatus === AidStatus.UNDER_REVIEW ||
-          newStatus === AidStatus.REJECTED)) ||
+          newStatus === AidStatus.REJECTED ||
+          newStatus === AidStatus.APPROVED)) ||
       (current === AidStatus.UNDER_REVIEW &&
         (newStatus === AidStatus.APPROVED || newStatus === AidStatus.REJECTED));
 
